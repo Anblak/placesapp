@@ -37,10 +37,6 @@ import okhttp3.Response;
  */
 public class ItemListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
     private static final OkHttpClient okHttpClient = new OkHttpClient();
     private static final String TAG = "MyActivity";
     public static List<Place> PLACES = new ArrayList<>();
@@ -62,8 +58,7 @@ public class ItemListActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(ItemListActivity.this, LoginActivity.class);
                 startActivity(intent);
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
+
             }
         });
 
