@@ -8,6 +8,7 @@ public class LoggedInUser {
     private String login;
     private String uuid;
     private String userRole;
+    private Boolean enabled;
 
     public LoggedInUser(String login) {
         this.login = login;
@@ -44,5 +45,13 @@ public class LoggedInUser {
 
     public void setUuid(String uuid) {
         this.uuid = uuid;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }

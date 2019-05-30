@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.anblak.placesapp.models.Comment;
 import com.anblak.placesapp.models.Place;
 
 import java.util.Objects;
@@ -66,9 +67,18 @@ public class ItemDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
 
-        // Show the dummy content as text in a TextView.
+        StringBuilder commentsBlock = new StringBuilder();
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(String.format("%s\nAverage Rating : %s", mItem.getDescription(), mItem.getAvgRating()));
+            for(Comment comment: mItem.getComments()) {
+                commentsBlock.append(comment.getUser().getLogin())
+                        .append("\n")
+                        .append(comment.getComment())
+                        .append("\n\n");
+            }
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(
+                    String.format("%s\nAverage Rating : %s\nComments : \n%s", mItem.getDescription(),
+                            mItem.getAvgRating(), commentsBlock.toString())
+            );
         }
 
         return rootView;
