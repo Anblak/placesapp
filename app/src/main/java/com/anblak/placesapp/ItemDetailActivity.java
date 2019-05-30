@@ -13,12 +13,15 @@ import android.widget.RatingBar;
 import android.widget.Toast;
 
 import com.anblak.placesapp.data.LoginRepository;
+import com.anblak.placesapp.models.Place;
 import com.anblak.placesapp.utils.Constants;
 
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -28,6 +31,8 @@ import okhttp3.RequestBody;
  */
 public class ItemDetailActivity extends AppCompatActivity {
     private static final OkHttpClient okHttpClient = new OkHttpClient();
+
+    private Place place;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +52,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     RequestBody formBody = new FormBody.Builder()
                             .add("rating", String.valueOf(rating))
                             .add("uuid", LoginRepository.getUser().getUuid())
-                            .add("placeId", LoginRepository.getUser().getUuid())
+                            .add("placeId", String.valueOf(ofNullable(place).map(Place::getId).orElse(0L)))
                             .build();
                     Request request = new Request.Builder()
                             .url(Constants.SERVER_URL + "/users")
@@ -97,5 +102,9 @@ public class ItemDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setPlace(Place place){
+     this.place = place;
     }
 }
