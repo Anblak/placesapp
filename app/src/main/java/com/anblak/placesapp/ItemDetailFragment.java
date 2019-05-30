@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.anblak.placesapp.dummy.DummyContent;
 import com.anblak.placesapp.models.Place;
 
 import java.util.Objects;

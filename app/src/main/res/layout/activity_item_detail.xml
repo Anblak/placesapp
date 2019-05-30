@@ -52,4 +52,12 @@
         app:layout_anchorGravity="top|end"
         app:srcCompat="@android:drawable/stat_notify_chat" />
 
+    <RatingBar
+        android:id="@+id/ratingBar_default"
+        style="?android:attr/ratingBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/item_detail_container"
+        app:layout_anchorGravity="center_horizontal|center" />
+
 </android.support.design.widget.CoordinatorLayout>

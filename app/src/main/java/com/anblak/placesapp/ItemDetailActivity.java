@@ -9,6 +9,16 @@ import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+import android.widget.RatingBar;
+import android.widget.Toast;
+
+import com.anblak.placesapp.data.LoginRepository;
+import com.anblak.placesapp.utils.Constants;
+
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -17,15 +27,40 @@ import android.view.MenuItem;
  * in a {@link ItemListActivity}.
  */
 public class ItemDetailActivity extends AppCompatActivity {
+    private static final OkHttpClient okHttpClient = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        Toolbar toolbar = findViewById(R.id.detail_toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = findViewById(R.id.fab);
+        final RatingBar defaultRatingBar = findViewById(R.id.ratingBar_default);
+        defaultRatingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float rating,
+                                        boolean fromUser) {
+                if(LoginRepository.getUser() != null) {
+                    RequestBody formBody = new FormBody.Builder()
+                            .add("rating", String.valueOf(rating))
+                            .add("uuid", LoginRepository.getUser().getUuid())
+                            .add("placeId", LoginRepository.getUser().getUuid())
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(Constants.SERVER_URL + "/users")
+                            .post(formBody)
+                            .build();
+                    Toast.makeText(ItemDetailActivity.this, "Rating: " + String.valueOf(rating),
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(ItemDetailActivity.this, "Authorize please",
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
