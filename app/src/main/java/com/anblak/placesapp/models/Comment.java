@@ -1,9 +1,12 @@
 package com.anblak.placesapp.models;
 
+import com.anblak.placesapp.data.model.LoggedInUser;
+
 public class Comment {
 
     private String id;
     private Place place;
+    private LoggedInUser user;
     private String comment;
 
     public String getId() {
@@ -28,5 +31,13 @@ public class Comment {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public LoggedInUser getUser() {
+        return user;
+    }
+
+    public void setUser(LoggedInUser user) {
+        this.user = user;
     }
 }

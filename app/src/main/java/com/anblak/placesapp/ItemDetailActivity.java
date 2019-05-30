@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,12 +21,17 @@ import com.anblak.placesapp.data.LoginRepository;
 import com.anblak.placesapp.utils.Constants;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static java.util.Optional.ofNullable;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -33,7 +39,7 @@ import okhttp3.Response;
  * item details are presented side-by-side with a list of items
  * in a {@link ItemListActivity}.
  */
-public class ItemDetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity implements CreateComment.NoticeDialogListener {
     private static final OkHttpClient okHttpClient = new OkHttpClient();
     private static final String TAG = "Detail_Activity";
     private static final String SUCCESS_RESULT = "Respect";
@@ -72,45 +78,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                builder.setView(getLayoutInflater().inflate(R.layout.fragment_create_comment,null));
-                builder.setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if(LoginRepository.getUser() != null) {
-                            String message = ((EditText)findViewById(R.id.edit_comment)).getEditableText().toString();
-                            RequestBody formBody = new FormBody.Builder()
-                                    .add("message", message)
-                                    .add("uuid", LoginRepository.getUser().getUuid())
-                                    .add("placeId", String.valueOf(ItemDetailFragment.getmItem().getId()))
-                                    .build();
-
-                            Request request = new Request.Builder()
-                                    .url(Constants.SERVER_URL + "/comments")
-                                    .post(formBody)
-                                    .build();
-                            try {
-                                Response response = okHttpClient.newCall(request).execute();
-                                if(!response.body().string().equals(SUCCESS_RESULT)) {
-                                    Toast.makeText(ItemDetailActivity.this, "Error",
-                                            Toast.LENGTH_LONG).show();
-                                } else {
-                                    Toast.makeText(ItemDetailActivity.this, "Comment: " + message,
-                                            Toast.LENGTH_LONG).show();
-                                }
-                            } catch (IOException e) {
-                                Log.v(TAG, e.getMessage());
-                                Toast.makeText(ItemDetailActivity.this, "Error",
-                                        Toast.LENGTH_LONG).show();
-                            }
-
-                        } else {
-                            Toast.makeText(ItemDetailActivity.this, "Authorize please",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }
-                });
-                builder.create().show();
+                DialogFragment dialogFragment = new CreateComment();
+                dialogFragment.show(getSupportFragmentManager(),"Sooqa");
             }
         });
     }
@@ -166,5 +135,10 @@ public class ItemDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPositive(DialogFragment dialogFragment) {
+        Toast.makeText(this,"pizdos",Toast.LENGTH_SHORT).show();
     }
 }
