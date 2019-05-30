@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -15,10 +16,13 @@ import android.widget.Toast;
 import com.anblak.placesapp.data.LoginRepository;
 import com.anblak.placesapp.utils.Constants;
 
+import java.io.IOException;
+
 import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -28,6 +32,8 @@ import okhttp3.RequestBody;
  */
 public class ItemDetailActivity extends AppCompatActivity {
     private static final OkHttpClient okHttpClient = new OkHttpClient();
+    private static final String TAG = "Detail_Activity";
+    private static final String SUCCESS_RESULT = "Respect";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,18 +49,34 @@ public class ItemDetailActivity extends AppCompatActivity {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating,
                                         boolean fromUser) {
+
                 if(LoginRepository.getUser() != null) {
+
                     RequestBody formBody = new FormBody.Builder()
                             .add("rating", String.valueOf(rating))
                             .add("uuid", LoginRepository.getUser().getUuid())
-                            .add("placeId", LoginRepository.getUser().getUuid())
+                            .add("placeId", String.valueOf(ItemDetailFragment.getmItem().getId()))
                             .build();
+
                     Request request = new Request.Builder()
-                            .url(Constants.SERVER_URL + "/users")
+                            .url(Constants.SERVER_URL + "/places/rating")
                             .post(formBody)
                             .build();
-                    Toast.makeText(ItemDetailActivity.this, "Rating: " + String.valueOf(rating),
-                            Toast.LENGTH_LONG).show();
+                    try {
+                        Response response = okHttpClient.newCall(request).execute();
+                        if(!response.body().string().equals(SUCCESS_RESULT)) {
+                            Toast.makeText(ItemDetailActivity.this, "Error",
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(ItemDetailActivity.this, "Rating: " + String.valueOf(rating),
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (IOException e) {
+                        Log.v(TAG, e.getMessage());
+                        Toast.makeText(ItemDetailActivity.this, "Error",
+                                Toast.LENGTH_LONG).show();
+                    }
+
                 } else {
                     Toast.makeText(ItemDetailActivity.this, "Authorize please",
                             Toast.LENGTH_LONG).show();

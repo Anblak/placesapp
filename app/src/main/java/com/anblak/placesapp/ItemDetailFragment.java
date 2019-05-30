@@ -30,7 +30,7 @@ public class ItemDetailFragment extends Fragment {
     /**
      * The dummy content this fragment is presenting.
      */
-    private Place mItem;
+    private static Place mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -68,9 +68,17 @@ public class ItemDetailFragment extends Fragment {
 
         // Show the dummy content as text in a TextView.
         if (mItem != null) {
-            ((TextView) rootView.findViewById(R.id.item_detail)).setText(mItem.getDescription());
+            ((TextView) rootView.findViewById(R.id.item_detail)).setText(String.format("%s\nAverage Rating : %s", mItem.getDescription(), mItem.getAvgRating()));
         }
 
         return rootView;
+    }
+
+    public static Place getmItem() {
+        return mItem;
+    }
+
+    public static void setmItem(Place mItem) {
+        ItemDetailFragment.mItem = mItem;
     }
 }
